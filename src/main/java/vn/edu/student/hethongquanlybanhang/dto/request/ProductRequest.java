@@ -9,20 +9,18 @@ import jakarta.validation.constraints.Size;
 public class ProductRequest {
 
     @NotBlank(message = "Tên sản phẩm không được để trống")
-    @Size(min = 2, max = 255,
-            message = "Tên sản phẩm phải từ 2 đến 255 ký tự")
+    @Size(min = 2, max = 255, message = "Tên sản phẩm phải từ 2 đến 255 ký tự")
     private String name;
 
     @NotNull(message = "Giá sản phẩm không được để trống")
     @Positive(message = "Giá sản phẩm phải lớn hơn 0")
-    private Double price;
+    private Double big; // Khớp tên biến là big
 
     @NotNull(message = "Số lượng không được để trống")
     @Min(value = 0, message = "Số lượng không được nhỏ hơn 0")
     private Integer quantity;
 
-    @Size(max = 500,
-            message = "Mô tả không được vượt quá 500 ký tự")
+    @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
     private String description;
 
     private String image;
@@ -36,14 +34,13 @@ public class ProductRequest {
 
     public ProductRequest(
             String name,
-            Double price,
+            Double big,
             Integer quantity,
             String description,
             String image,
             Long categoryId) {
-
         this.name = name;
-        this.price = price;
+        this.big = big;
         this.quantity = quantity;
         this.description = description;
         this.image = image;
@@ -58,12 +55,12 @@ public class ProductRequest {
         this.name = name;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getBig() {
+        return big;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setBig(Double big) {
+        this.big = big;
     }
 
     public Integer getQuantity() {

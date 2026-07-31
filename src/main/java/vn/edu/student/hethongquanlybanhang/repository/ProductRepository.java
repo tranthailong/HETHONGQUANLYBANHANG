@@ -2,22 +2,23 @@ package vn.edu.student.hethongquanlybanhang.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import vn.edu.student.hethongquanlybanhang.entity.Product;
 
+@Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // Tổng sản phẩm
-    long count();
+    // 1. Tổng sản phẩm (dùng sẵn của JpaRepository, không cần ghi đè)
 
-    // Đang bán (số lượng > 10)
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.quantity > 10")
-    long countActiveProducts();
+    // 2. Đang bán (số lượng > 10) - Đổi sang Long Object & Native Query chống lỗi 500
+    @Query(value = "SELECT COUNT(*) FROM products WHERE quantity > 10", nativeQuery = true)
+    Long countActiveProducts();
 
-    // Sắp hết hàng (1 -> 10)
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.quantity BETWEEN 1 AND 10")
-    long countLowStockProducts();
+    // 3. Sắp hết hàng (1 -> 10)
+    @Query(value = "SELECT COUNT(*) FROM products WHERE quantity BETWEEN 1 AND 10", nativeQuery = true)
+    Long countLowStockProducts();
 
-    // Hết hàng
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.quantity = 0")
-    long countOutOfStockProducts();
+    // 4. Hết hàng (số lượng = 0)
+    @Query(value = "SELECT COUNT(*) FROM products WHERE quantity = 0", nativeQuery = true)
+    Long countOutOfStockProducts();
 }

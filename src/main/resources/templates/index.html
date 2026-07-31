@@ -1,318 +1,105 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Hệ thống quản lý bán hàng</title>
+    <title>Sale Management System</title>
 
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Google Fonts Poppins & Font Awesome CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Nạp file CSS tĩnh với đường dẫn Thymeleaf chuẩn -->
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" href="/css/dashboard.css">
 </head>
-
 <body>
-
-<div class="container">
-
-    <!-- Sidebar -->
+<div class="layout-wrapper">
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-
-        <div class="logo">
-            <i class="fa-solid fa-store"></i>
-            <h2>Sale Manager</h2>
+        <div class="brand">
+            <i class="fa-solid fa-shop"></i>
+            <h2>Sale System</h2>
         </div>
-
-        <ul class="menu">
-
-            <li class="active">
-                <a th:href="@{/}">
-                    <i class="fa-solid fa-chart-line"></i>
-                    Dashboard
-                </a>
-            </li>
-
-            <li>
-                <a th:href="@{/products}">
-                    <i class="fa-solid fa-box"></i>
-                    Sản phẩm
-                </a>
-            </li>
-
-            <li>
-                <a th:href="@{/categories}">
-                    <i class="fa-solid fa-layer-group"></i>
-                    Danh mục
-                </a>
-            </li>
-
-            <li>
-                <a th:href="@{/customers}">
-                    <i class="fa-solid fa-users"></i>
-                    Khách hàng
-                </a>
-            </li>
-
-            <li>
-                <a th:href="@{/orders}">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    Đơn hàng
-                </a>
-            </li>
-
-            <li>
-                <a th:href="@{/statistics}">
-                    <i class="fa-solid fa-chart-column"></i>
-                    Thống kê
-                </a>
-            </li>
-
-            <li>
-                <a th:href="@{/settings}">
-                    <i class="fa-solid fa-gear"></i>
-                    Cài đặt
-                </a>
-            </li>
-
+        <ul class="nav-menu">
+            <li class="active"><a href="/"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="/products.html"><i class="fa-solid fa-box-archive"></i> Products</a></li>
+            <li><a href="/categories.html"><i class="fa-solid fa-tags"></i> Categories</a></li>
+            <li><a href="/customers.html"><i class="fa-solid fa-users"></i> Customers</a></li>
+            <li><a href="/orders.html"><i class="fa-solid fa-cart-shopping"></i> Orders</a></li>
+            <li><a href="/statistics.html"><i class="fa-solid fa-chart-line"></i> Statistics</a></li>
+            <li><a href="/settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
         </ul>
-
     </aside>
 
-    <!-- Main -->
-    <main class="main">
-
-        <div class="topbar">
-
-            <h1>Dashboard</h1>
-
-            <div class="profile">
-
-                <i class="fa-solid fa-user"></i>
-
-                <span>Admin</span>
-
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <header class="navbar">
+            <div class="nav-left">
+                <h1 class="page-title">Dashboard Overview</h1>
             </div>
-
-        </div>
-
-        <!-- Cards -->
-
-        <div class="cards">
-
-            <div class="card blue">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-box"></i>
-                </div>
-
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=2563eb&color=fff" alt="Avatar">
                 <div>
-
-                    <h3>Tổng sản phẩm</h3>
-
-                    <h2 id="totalProducts">0</h2>
-
+                    <div class="user-name">Admin System</div>
+                    <div class="user-role">Administrator</div>
                 </div>
-
             </div>
+        </header>
 
-            <div class="card green">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-check"></i>
+        <main class="content-body">
+            <!-- 8 THẺ CARDS CHUẨN BACKEND -->
+            <section class="cards-grid">
+                <div class="card stat-card">
+                    <div class="icon-box bg-blue"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="details"><p>Tổng Doanh Thu</p><h3 id="totalRevenue">0 đ</h3></div>
                 </div>
-
-                <div>
-
-                    <h3>Đang bán</h3>
-
-                    <h2 id="activeProducts">0</h2>
-
+                <div class="card stat-card">
+                    <div class="icon-box bg-green"><i class="fa-solid fa-cart-check"></i></div>
+                    <div class="details"><p>Tổng Đơn Hàng</p><h3 id="totalOrders">0</h3></div>
                 </div>
-
-            </div>
-
-            <div class="card orange">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+                <div class="card stat-card">
+                    <div class="icon-box bg-orange"><i class="fa-solid fa-boxes-stacked"></i></div>
+                    <div class="details"><p>Tổng Sản Phẩm</p><h3 id="totalProducts">0</h3></div>
                 </div>
-
-                <div>
-
-                    <h3>Sắp hết hàng</h3>
-
-                    <h2 id="lowStockProducts">0</h2>
-
+                <div class="card stat-card">
+                    <div class="icon-box bg-sky"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="details"><p>Sản Phẩm Đang Bán</p><h3 id="activeProducts">0</h3></div>
                 </div>
-
-            </div>
-
-            <div class="card red">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-xmark"></i>
+                <div class="card stat-card">
+                    <div class="icon-box bg-purple"><i class="fa-solid fa-users"></i></div>
+                    <div class="details"><p>Tổng Khách Hàng</p><h3 id="totalCustomers">0</h3></div>
                 </div>
-
-                <div>
-
-                    <h3>Hết hàng</h3>
-
-                    <h2 id="outOfStockProducts">0</h2>
-
+                <div class="card stat-card">
+                    <div class="icon-box bg-teal"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="details"><p>Tổng Danh Mục</p><h3 id="totalCategories">0</h3></div>
                 </div>
-
-            </div>
-
-        </div>
-
-        <!-- Row 2 -->
-
-        <div class="cards">
-
-            <div class="card purple">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-layer-group"></i>
+                <div class="card stat-card">
+                    <div class="icon-box bg-amber"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="details"><p>Sắp Hết Hàng (&lt;15)</p><h3 id="lowStockProducts">0</h3></div>
                 </div>
-
-                <div>
-
-                    <h3>Danh mục</h3>
-
-                    <h2 id="totalCategories">0</h2>
-
+                <div class="card stat-card">
+                    <div class="icon-box bg-red"><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div class="details"><p>Đã Hết Hàng (0)</p><h3 id="outOfStockProducts">0</h3></div>
                 </div>
+            </section>
 
-            </div>
-
-            <div class="card cyan">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-users"></i>
+            <!-- BIỂU ĐỒ -->
+            <section>
+                <div class="card chart-card">
+                    <h3 class="chart-title"><i class="fa-solid fa-chart-column"></i> Biểu Đồ Thống Kê Realtime</h3>
+                    <div class="chart-box">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
                 </div>
-
-                <div>
-
-                    <h3>Khách hàng</h3>
-
-                    <h2 id="totalCustomers">0</h2>
-
-                </div>
-
-            </div>
-
-            <div class="card dark">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </div>
-
-                <div>
-
-                    <h3>Đơn hàng</h3>
-
-                    <h2 id="totalOrders">0</h2>
-
-                </div>
-
-            </div>
-
-            <div class="card gold">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-dollar-sign"></i>
-                </div>
-
-                <div>
-
-                    <h3>Doanh thu</h3>
-
-                    <h2 id="totalRevenue">0 ₫</h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Table -->
-
-        <div class="dashboard-panel">
-
-            <div class="panel-header">
-
-                <h2>Tổng quan hệ thống</h2>
-
-            </div>
-
-            <table>
-
-                <thead>
-
-                <tr>
-
-                    <th>Thông tin</th>
-
-                    <th>Giá trị</th>
-
-                </tr>
-
-                </thead>
-
-                <tbody>
-
-                <tr>
-
-                    <td>Tổng sản phẩm</td>
-
-                    <td id="tbProducts">0</td>
-
-                </tr>
-
-                <tr>
-
-                    <td>Danh mục</td>
-
-                    <td id="tbCategories">0</td>
-
-                </tr>
-
-                <tr>
-
-                    <td>Khách hàng</td>
-
-                    <td id="tbCustomers">0</td>
-
-                </tr>
-
-                <tr>
-
-                    <td>Đơn hàng</td>
-
-                    <td id="tbOrders">0</td>
-
-                </tr>
-
-                <tr>
-
-                    <td>Doanh thu</td>
-
-                    <td id="tbRevenue">0 ₫</td>
-
-                </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </main>
-
+            </section>
+        </main>
+    </div>
 </div>
 
-<script th:src="@{/js/dashboard.js}"></script>
-
+<!-- Nạp file JS tĩnh với đường dẫn Thymeleaf chuẩn -->
+<script th:src="@{/js/dashboard.js}" src="/js/dashboard.js"></script>
 </body>
-
 </html>

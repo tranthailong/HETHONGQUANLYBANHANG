@@ -1,672 +1,131 @@
 <!DOCTYPE html>
-<html lang="vi"
-      xmlns:th="http://www.thymeleaf.org">
-
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Quản lý sản phẩm</title>
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <link rel="stylesheet"
-          th:href="@{/css/products.css}">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Sản phẩm - Dashboard Bán Hàng</title>
+    <!-- Tailwind CSS cho khung -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/products.css">
 </head>
+<body class="bg-slate-100 font-sans">
 
-<body>
-
-<div class="page-container">
-
-    <!-- HEADER -->
-    <header class="page-header">
-
-        <div>
-            <h1>
-                <i class="bi bi-box-seam"></i>
-                Quản lý sản phẩm
-            </h1>
-
-            <p>
-                Quản lý sản phẩm trong hệ thống bán hàng
-            </p>
+<div class="flex h-screen overflow-hidden">
+    <!-- Sidebar Dashboard -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-xl">
+        <div class="p-6 text-xl font-bold tracking-wider text-white border-b border-slate-800 flex items-center gap-3">
+            <i class="fa-solid fa-store text-blue-500"></i> ADMIN DASHBOARD
         </div>
+        <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+            <a href="/dashboard" class="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-slate-800 transition"><i class="fa-solid fa-chart-pie w-5"></i> Tổng quan</a>
+            <a href="#" class="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-slate-800 transition"><i class="fa-solid fa-cash-register w-5"></i> Bán hàng (POS)</a>
+            <a href="/products" class="flex items-center gap-3 py-3 px-4 rounded-xl bg-blue-600 text-white font-medium shadow-lg shadow-blue-600/30"><i class="fa-solid fa-box-open w-5"></i> Quản lý Sản phẩm</a>
+            <a href="/categories" class="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-slate-800 transition"><i class="fa-solid fa-warehouse w-5"></i> Kho hàng</a>
+            <a href="/customers" class="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-slate-800 transition"><i class="fa-solid fa-users w-5"></i> Khách hàng</a>
+        </nav>
+    </aside>
 
-        <button
-                id="addProductBtn"
-                class="btn btn-primary">
+    <!-- Main Workspace -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <!-- Topbar Header -->
+        <header class="bg-white h-20 shadow-sm flex items-center justify-between px-8 z-10">
+            <div class="flex items-center gap-4 w-96">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm theo tên..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition">
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <h4 class="text-sm font-bold text-slate-800">Quản trị viên</h4>
+                    <span class="text-xs text-slate-500">Super Admin</span>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold shadow-md">AD</div>
+            </div>
+        </header>
 
-            <i class="bi bi-plus-lg"></i>
-
-            Thêm sản phẩm
-
-        </button>
-
-    </header>
-
-
-    <!-- STATISTICS -->
-    <section class="stats-grid">
-
-        <div class="stat-card">
-
-            <div class="stat-icon blue">
-                <i class="bi bi-box-seam"></i>
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800">Danh sách Sản phẩm</h1>
+                    <p class="text-sm text-slate-500 mt-1">Quản lý kho hàng, giá bán và thông tin chi tiết sản phẩm hệ thống.</p>
+                </div>
+                <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-lg shadow-blue-600/20 transition">
+                    <i class="fa-solid fa-plus"></i> Thêm sản phẩm mới
+                </button>
             </div>
 
-            <div>
-                <span>Tổng sản phẩm</span>
-                <strong id="totalProducts">0</strong>
+            <!-- Data Table Card (Đã xóa cột hình ảnh) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                        <tr class="bg-slate-50/70 border-b border-slate-100 text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                            <th class="p-5">ID</th>
+                            <th class="p-5">Tên sản phẩm</th>
+                            <th class="p-5">Danh mục</th>
+                            <th class="p-5">Giá bán</th>
+                            <th class="p-5">Tồn kho</th>
+                            <th class="p-5 text-center">Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody id="productTableBody" class="divide-y divide-slate-100 text-sm text-slate-700">
+                        <!-- Dữ liệu render tự động -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-icon green">
-                <i class="bi bi-check-circle"></i>
-            </div>
-
-            <div>
-                <span>Đang bán</span>
-                <strong id="activeProducts">0</strong>
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-icon orange">
-                <i class="bi bi-exclamation-triangle"></i>
-            </div>
-
-            <div>
-                <span>Sắp hết hàng</span>
-                <strong id="lowStockProducts">0</strong>
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-icon red">
-                <i class="bi bi-x-circle"></i>
-            </div>
-
-            <div>
-                <span>Hết hàng</span>
-                <strong id="outOfStockProducts">0</strong>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- FILTER -->
-    <section class="filter-card">
-
-        <div class="search-box">
-
-            <i class="bi bi-search"></i>
-
-            <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Tìm kiếm sản phẩm...">
-
-            <button
-                    id="clearSearch"
-                    class="clear-search">
-
-                <i class="bi bi-x-lg"></i>
-
-            </button>
-
-        </div>
-
-
-        <select id="categoryFilter">
-
-            <option value="all">
-                Tất cả danh mục
-            </option>
-
-        </select>
-
-
-        <select id="stockFilter">
-
-            <option value="all">
-                Tất cả tồn kho
-            </option>
-
-            <option value="available">
-                Còn hàng
-            </option>
-
-            <option value="low">
-                Sắp hết hàng
-            </option>
-
-            <option value="out">
-                Hết hàng
-            </option>
-
-        </select>
-
-
-        <select id="sortFilter">
-
-            <option value="default">
-                Sắp xếp mặc định
-            </option>
-
-            <option value="nameAsc">
-                Tên A → Z
-            </option>
-
-            <option value="nameDesc">
-                Tên Z → A
-            </option>
-
-            <option value="priceAsc">
-                Giá thấp → cao
-            </option>
-
-            <option value="priceDesc">
-                Giá cao → thấp
-            </option>
-
-            <option value="quantityAsc">
-                Tồn kho thấp → cao
-            </option>
-
-            <option value="quantityDesc">
-                Tồn kho cao → thấp
-            </option>
-
-        </select>
-
-    </section>
-
-
-    <!-- TABLE -->
-    <section class="table-card">
-
-        <div class="table-header">
-
-            <div>
-                <h2>Danh sách sản phẩm</h2>
-
-                <p>
-                    Dữ liệu được lấy trực tiếp từ cơ sở dữ liệu
-                </p>
-            </div>
-
-            <button
-                    id="refreshBtn"
-                    class="btn btn-secondary">
-
-                <i class="bi bi-arrow-clockwise"></i>
-
-                Làm mới
-
-            </button>
-
-        </div>
-
-
-        <!-- LOADING -->
-        <div
-                id="loadingState"
-                class="loading-state">
-
-            <div class="spinner"></div>
-
-            <p>Đang tải dữ liệu...</p>
-
-        </div>
-
-
-        <!-- ERROR -->
-        <div
-                id="errorState"
-                class="error-state">
-
-            <i class="bi bi-exclamation-circle"></i>
-
-            <h3>Không thể tải dữ liệu</h3>
-
-            <p id="errorMessage">
-                Không thể kết nối đến máy chủ.
-            </p>
-
-            <button
-                    id="retryBtn"
-                    class="btn btn-primary">
-
-                Thử lại
-
-            </button>
-
-        </div>
-
-
-        <!-- EMPTY -->
-        <div
-                id="emptyState"
-                class="empty-state">
-
-            <i class="bi bi-box"></i>
-
-            <h3>Không có sản phẩm</h3>
-
-            <p>
-                Chưa có sản phẩm phù hợp với điều kiện tìm kiếm.
-            </p>
-
-        </div>
-
-
-        <!-- TABLE WRAPPER -->
-        <div
-                id="tableWrapper"
-                class="table-wrapper">
-
-            <table>
-
-                <thead>
-
-                <tr>
-
-                    <th>ID</th>
-
-                    <th>Sản phẩm</th>
-
-                    <th>Mô tả</th>
-
-                    <th>Danh mục</th>
-
-                    <th>Giá</th>
-
-                    <th>Tồn kho</th>
-
-                    <th>Trạng thái</th>
-
-                    <th>Thao tác</th>
-
-                </tr>
-
-                </thead>
-
-
-                <tbody id="productTableBody">
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        <!-- PAGINATION -->
-        <div class="pagination-area">
-
-            <div class="showing">
-
-                Hiển thị
-
-                <strong id="showingFrom">0</strong>
-
-                đến
-
-                <strong id="showingTo">0</strong>
-
-                trong tổng số
-
-                <strong id="showingTotal">0</strong>
-
-                sản phẩm
-
-            </div>
-
-
-            <div
-                    id="pagination"
-                    class="pagination">
-
-            </div>
-
-        </div>
-
-    </section>
-
+        </main>
+    </div>
 </div>
 
-
-<!-- ADD / EDIT MODAL -->
-<div
-        id="productModal"
-        class="modal-overlay">
-
-    <div class="modal">
-
-        <div class="modal-header">
-
-            <div>
-
-                <h2 id="modalTitle">
-                    Thêm sản phẩm
-                </h2>
-
-                <p>
-                    Nhập thông tin sản phẩm
-                </p>
-
-            </div>
-
-            <button
-                    id="closeModal"
-                    class="close-btn">
-
-                <i class="bi bi-x-lg"></i>
-
-            </button>
-
+<!-- Modal Form Thêm/Sửa Sản phẩm (Đã ẩn input ảnh đi để form gọn hơn) -->
+<div id="productModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden animate-in">
+        <div class="flex justify-between items-center bg-slate-50 px-6 py-4 border-b border-slate-100">
+            <h3 id="modalTitle" class="font-bold text-lg text-slate-800">Thêm mới sản phẩm</h3>
+            <button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
-
-        <form id="productForm">
-
-            <input
-                    type="hidden"
-                    id="productId">
-
-
-            <div class="form-group">
-
-                <label>
-                    Tên sản phẩm
-                    <span>*</span>
-                </label>
-
-                <input
-                        type="text"
-                        id="productName"
-                        required
-                        placeholder="Nhập tên sản phẩm">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Danh mục
-                    <span>*</span>
-                </label>
-
-                <select
-                        id="productCategory"
-                        required>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-row">
-
-                <div class="form-group">
-
-                    <label>
-                        Giá bán
-                        <span>*</span>
-                    </label>
-
-                    <input
-                            type="number"
-                            id="productPrice"
-                            min="0"
-                            step="0.01"
-                            required>
-
+        <form id="productForm" onsubmit="handleFormSubmit(event)">
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                <input type="hidden" id="productId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tên sản phẩm (*)</label>
+                    <input type="text" id="name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition" placeholder="Nhập tên sản phẩm...">
                 </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Số lượng
-                        <span>*</span>
-                    </label>
-
-                    <input
-                            type="number"
-                            id="productQuantity"
-                            min="0"
-                            required>
-
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giá sản phẩm (*)</label>
+                        <input type="number" step="0.01" id="price" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition" placeholder="0.0">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Số lượng (*)</label>
+                        <input type="number" id="quantity" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition" placeholder="0">
+                    </div>
                 </div>
-
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Danh mục sản phẩm (*)</label>
+                    <select id="categoryId" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition bg-white">
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Mô tả sản phẩm</label>
+                    <textarea id="description" rows="3" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition" placeholder="Nhập mô tả chi tiết..."></textarea>
+                </div>
             </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Hình ảnh
-                </label>
-
-                <input
-                        type="text"
-                        id="productImage"
-                        placeholder="Ví dụ: iphone16.jpg">
-
+            <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3 border-t border-slate-100">
+                <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl bg-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-300 transition">Hủy</button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">Lưu thông tin</button>
             </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Mô tả
-                </label>
-
-                <textarea
-                        id="productDescription"
-                        rows="4"
-                        placeholder="Nhập mô tả sản phẩm">
-                </textarea>
-
-            </div>
-
-
-            <div class="modal-footer">
-
-                <button
-                        type="button"
-                        id="cancelModal"
-                        class="btn btn-secondary">
-
-                    Hủy
-
-                </button>
-
-                <button
-                        type="submit"
-                        class="btn btn-primary">
-
-                    <i class="bi bi-check-lg"></i>
-
-                    Lưu sản phẩm
-
-                </button>
-
-            </div>
-
         </form>
-
     </div>
-
 </div>
 
-
-<!-- DETAIL MODAL -->
-<div
-        id="detailModal"
-        class="modal-overlay">
-
-    <div class="modal detail-modal">
-
-        <div class="modal-header">
-
-            <div>
-
-                <h2>Chi tiết sản phẩm</h2>
-
-                <p>
-                    Thông tin từ cơ sở dữ liệu
-                </p>
-
-            </div>
-
-            <button
-                    id="closeDetailModal"
-                    class="close-btn">
-
-                <i class="bi bi-x-lg"></i>
-
-            </button>
-
-        </div>
-
-
-        <div class="detail-content">
-
-            <div class="detail-row">
-
-                <span>ID</span>
-
-                <strong id="detailId"></strong>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span>Tên sản phẩm</span>
-
-                <strong id="detailName"></strong>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span>Danh mục</span>
-
-                <strong id="detailCategory"></strong>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span>Giá</span>
-
-                <strong id="detailPrice"></strong>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span>Số lượng</span>
-
-                <strong id="detailQuantity"></strong>
-
-            </div>
-
-
-            <div class="detail-row">
-
-                <span>Hình ảnh</span>
-
-                <strong id="detailImage"></strong>
-
-            </div>
-
-
-            <div class="detail-description">
-
-                <span>Mô tả</span>
-
-                <p id="detailDescription"></p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- DELETE MODAL -->
-<div
-        id="deleteModal"
-        class="modal-overlay">
-
-    <div class="modal delete-modal">
-
-        <div class="delete-icon">
-
-            <i class="bi bi-trash"></i>
-
-        </div>
-
-        <h2>Xóa sản phẩm?</h2>
-
-        <p>
-            Bạn có chắc chắn muốn xóa sản phẩm này?
-            Dữ liệu sẽ bị xóa khỏi cơ sở dữ liệu.
-        </p>
-
-        <div class="modal-footer">
-
-            <button
-                    id="cancelDelete"
-                    class="btn btn-secondary">
-
-                Hủy
-
-            </button>
-
-            <button
-                    id="confirmDelete"
-                    class="btn btn-danger">
-
-                Xóa sản phẩm
-
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<script
-        th:src="@{/js/products.js}">
-</script>
-
+<script src="/js/products.js"></script>
 </body>
-
 </html>

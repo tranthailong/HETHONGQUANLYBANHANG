@@ -28,7 +28,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> getAll() {
-
         return productRepository.findAll()
                 .stream()
                 .map(ProductMapper::toResponse)
@@ -37,7 +36,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getById(Long id) {
-
         Product product = productRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Product not found with id = " + id));
@@ -47,7 +45,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse create(ProductRequest request) {
-
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Category not found with id = " + request.getCategoryId()));
@@ -59,7 +56,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse update(Long id, ProductRequest request) {
-
         Product product = productRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Product not found with id = " + id));
@@ -69,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
                         new ResourceNotFoundException("Category not found with id = " + request.getCategoryId()));
 
         product.setName(request.getName());
-        product.setPrice(request.getPrice());
+        product.setBig(request.getBig());
         product.setQuantity(request.getQuantity());
         product.setDescription(request.getDescription());
         product.setImage(request.getImage());
@@ -80,7 +76,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(Long id) {
-
         Product product = productRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Product not found with id = " + id));

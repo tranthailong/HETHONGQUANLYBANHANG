@@ -12,6 +12,9 @@ services:
     ports:
       - "3307:3306"
 
+    # Đã sửa lại vị trí: Đặt command thẳng hàng với ports, environment, volumes...
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/sale_management.sql:/docker-entrypoint-initdb.d/sale_management.sql:ro
@@ -39,7 +42,7 @@ services:
         condition: service_healthy
 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/sale_management
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/sale_management?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root123
 

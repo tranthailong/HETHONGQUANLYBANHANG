@@ -12,6 +12,7 @@ public class OrderDetail {
 
     private Integer quantity;
 
+    @Column(name = "big")
     private Double price;
 
     @ManyToOne
@@ -22,7 +23,7 @@ public class OrderDetail {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    // Constructor rỗng bắt buộc cho JPA
+    // Constructor rỗng
     public OrderDetail() {
     }
 
@@ -80,6 +81,4 @@ public class OrderDetail {
     public void setProduct(Product product) {
         this.product = product;
     }
-
-
 }
